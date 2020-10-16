@@ -115,6 +115,10 @@ public class GameService {
         this.gameRepository.save(game);
     }
 
+    public Game read(Game game) throws Exception {
+        return this.gameRepository.findById(game.getId()).orElseThrow(() -> new Exception());
+    }
+
     public List<Game> list() {
         return this.gameRepository.findAll();
     }

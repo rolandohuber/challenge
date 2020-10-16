@@ -1,6 +1,8 @@
 package com.rolandohuber.minesweeper.controller;
 
+import com.rolandohuber.minesweeper.dto.CellDto;
 import com.rolandohuber.minesweeper.entity.Game;
+import com.rolandohuber.minesweeper.service.CellService;
 import com.rolandohuber.minesweeper.service.GameService;
 import com.rolandohuber.minesweeper.util.Mapper;
 import lombok.AllArgsConstructor;
@@ -12,8 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class GameController {
 
-    private GameService gameService;
-    private Mapper mapper;
+    private final GameService gameService;
+    private final Mapper mapper;
+    private final CellService cellService;
 
     @PostMapping("/create")
     public ResponseEntity create(@RequestBody Game game) {
@@ -31,4 +34,26 @@ public class GameController {
     public ResponseEntity list() {
         return ResponseEntity.ok(this.gameService.list().stream().map(game -> mapper.mapGameToGameDto(game)));
     }
+
+    @PostMapping("/cell/markAsFlag")
+    public ResponseEntity markAsFlag(@RequestBody CellDto cell) {
+        try {
+            cellService.markAsFlag(cell);
+            return ResponseEntity.ok(mapper.mapGameToGameDto(gameService.read(cell.getGame())));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/cell/discover")
+    public ResponseEntity discover(@RequestBody CellDto cell) {
+        try {
+            return ResponseEntity.ok(mapper.mapGameToGameDto(cellService.discover(cell)));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }
