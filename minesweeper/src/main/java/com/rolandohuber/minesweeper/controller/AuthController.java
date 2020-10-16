@@ -1,10 +1,10 @@
 package com.rolandohuber.minesweeper.controller;
 
-import com.rolandohuber.minesweeper.entity.User;
-import com.rolandohuber.minesweeper.repository.UserRepository;
 import com.rolandohuber.minesweeper.config.JwtResponse;
 import com.rolandohuber.minesweeper.config.JwtTokenUtil;
 import com.rolandohuber.minesweeper.config.JwtUserDetailsService;
+import com.rolandohuber.minesweeper.entity.User;
+import com.rolandohuber.minesweeper.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -3,9 +3,13 @@ package com.rolandohuber.minesweeper.service;
 import com.rolandohuber.minesweeper.entity.Cell;
 import com.rolandohuber.minesweeper.entity.CellType;
 import com.rolandohuber.minesweeper.entity.Game;
-import com.rolandohuber.minesweeper.repository.GameRepository;
 import com.rolandohuber.minesweeper.repository.CellRepository;
+import com.rolandohuber.minesweeper.repository.GameRepository;
+import com.rolandohuber.minesweeper.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,13 +18,19 @@ import java.util.*;
 @Service
 public class GameService {
 
+    @Value("${minesweeper.radar}")
+    private Integer radar;
     @Autowired
     private GameRepository gameRepository;
     @Autowired
     private CellRepository cellRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public Game create(Game game) {
 
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        game.setUser(userRepository.findByUsername(user.getUsername()));
 
         int[][] board = new int[game.getWidth()][game.getHeight()];
 
@@ -31,7 +41,7 @@ public class GameService {
 
         Set<String> bombsPositions = generateBombsPositions(game.getWidth(), game.getHeight(), game.getBombs());
 
-        List<Cell> cells = new LinkedList<Cell>();
+        List<Cell> cells = new LinkedList<>();
 
         for (int x = 0; x < game.getWidth(); x++) {
             for (int y = 0; y < game.getHeight(); y++) {
@@ -39,15 +49,14 @@ public class GameService {
                 cell.setPositionX(x);
                 cell.setPositionY(y);
                 cell.setGame(game);
-                CellType type = new CellType();
                 if (bombsPositions.contains(x + "_" + y)) {
-                    type.setName("BOMB");
+                    cell.setType(CellType.BOMB);
                     board[x][y] = -10;
                 } else {
-                    type.setName("EMPTY");
+                    cell.setType(CellType.EMPTY);
                     board[x][y] = 0;
                 }
-                cell.setType(type);
+
                 cells.add(cell);
             }
         }
@@ -58,9 +67,7 @@ public class GameService {
 
                 if (board[x][y] == -10)
                     continue;
-                board[x][y] += countBombsAround(board, x, y, 1);
-                board[x][y] += countBombsAround(board, x, y, 2);
-                board[x][y] += countBombsAround(board, x, y, 3);
+                board[x][y] += countBombsAround(board, x, y, radar);
             }
         }
 
@@ -95,7 +102,7 @@ public class GameService {
     }
 
     private Set<String> generateBombsPositions(Integer width, Integer height, Integer bombs) {
-        Set<String> list = new LinkedHashSet<String>(bombs);
+        Set<String> list = new LinkedHashSet<>(bombs);
         while (list.size() < bombs) {
             int x = new Random().ints(0, width).findFirst().getAsInt();
             int y = new Random().ints(0, height).findFirst().getAsInt();

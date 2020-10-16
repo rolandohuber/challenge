@@ -52,7 +52,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().mvcMatchers("/webjars/**", "/swagger-ui.html/**", "/configuration/**", "/swagger-resources/**", "/v2/api-docs", "/authenticate","/signUp");
+        web.ignoring().mvcMatchers("/webjars/**", "/swagger-ui.html/**", "/configuration/**", "/swagger-resources/**", "/v2/api-docs", "/authenticate", "/signUp");
     }
 
     @Bean

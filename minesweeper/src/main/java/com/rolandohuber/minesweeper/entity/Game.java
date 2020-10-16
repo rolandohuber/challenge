@@ -1,6 +1,7 @@
 package com.rolandohuber.minesweeper.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
@@ -12,7 +13,7 @@ import java.util.List;
 @javax.persistence.Entity
 @Getter
 @Setter
-public class Game extends Entity{
+public class Game extends Entity {
     public static final String USER_ATTRIBUTE = "user";
     private LocalDate date;
     private Long timer;

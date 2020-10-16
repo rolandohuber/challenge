@@ -1,7 +1,5 @@
 package com.rolandohuber.minesweeper.dto;
 
-import com.rolandohuber.minesweeper.entity.Cell;
-import com.rolandohuber.minesweeper.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +19,8 @@ public class GameDto {
     private Integer flags;
     private Integer bombs;
     private Integer width;
-    private Integer heigth;
+    private Integer height;
     private Boolean finished;
-    private CellDto[] cells;
-    private User user;
+    private CellDto[][] cells;
+    private UserDto user;
 }
