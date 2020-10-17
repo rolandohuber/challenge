@@ -1,0 +1,11 @@
+<table class="col">
+  <tbody>
+  <ng-container *ngIf="game">
+    <tr *ngFor="let row of game.cells;">
+      <td *ngFor="let cell of row;">
+        <app-cell [cell]="cell" (clickCell)="clickCell(cell)" (markCell)="markCell(cell)"></app-cell>
+      </td>
+    </tr>
+  </ng-container>
+  </tbody>
+</table>
